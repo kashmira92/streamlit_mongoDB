@@ -93,7 +93,34 @@ if selected == "Data Visualization":
             expenses = period_data.get("expenses")
             incomes = period_data.get("incomes")
     
-            # ... The rest of your code for plotting and displaying the period data ...
+    # Add update form    
+    with st.form("update_form"):
+      st.write("Update Period Data")
+   
+      # Fetch data for selected period
+      period_data = db.get_period(period)  
+      incomes = period_data["incomes"]
+      expenses = period_data["expenses"]
+      comment = period_data["comment"]
+   
+      # Show input fields pre-filled with existing data
+      st.text_input("Comment", comment)
+      for income in incomes:
+        st.number_input(income, incomes[income])  
+      for expense in expenses:
+        st.number_input(expense, expenses[expense])
+      
+      submitted = st.form_submit_button("Update")
+      if submitted:
+        # Get updated data from form
+        new_incomes = {income: st.session_state[income] for income in incomes}
+        new_expenses = {expense: st.session_state[expense] for expense in expenses}
+        new_comment = st.session_state["Comment"]
+        
+        # Update database
+        db.update_period(period, new_incomes, new_expenses, new_comment)  
+        st.success("Data updated!")
+
     
     
                 # Create metrics
