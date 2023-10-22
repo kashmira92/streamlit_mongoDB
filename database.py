@@ -5,7 +5,7 @@ import streamlit as st  # pip install streamlit
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-MONGO_URI = "mongodb+srv://kgolatka:"root"@cluster0.vzbsfma.mongodb.net/?retryWrites=true&w=majority"
+MONGO_URI = "mongodb+srv://kgolatka:root@cluster0.vzbsfma.mongodb.net/?retryWrites=true&w=majority"
 
 DATABASE_NAME = "personal_income_expense_tracker"
 COLLECTION_NAME = "monthly_expense"
