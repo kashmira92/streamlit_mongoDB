@@ -85,73 +85,38 @@ if selected == "Data Visualization":
     with st.form("saved_periods"):
         period = st.selectbox("Select Period:", get_all_periods())
         submitted = st.form_submit_button("Plot Period")
-
-    # # Add an Update button
-    # if st.button("Update"):
-    #     st.header("Update Period")
-    #     with st.form("update_form"):
-    #         period_data = db.get_period(period)
-    #         if period_data:
-    #             incomes = period_data.get("incomes")
-    #             expenses = period_data.get("expenses")
-    #             comment = period_data.get("comment")
-
-    #             col1, col2 = st.columns(2)
-    #             col1.text("Income")
-    #             for income in incomes:
-    #                 incomes[income] = col1.number_input(f"{income}:", value=incomes[income], min_value=0, format="%i", step=10)
-    #             col2.text("Expenses")
-    #             for expense in expenses:
-    #                 expenses[expense] = col2.number_input(f"{expense}:", value=expenses[expense], min_value=0, format="%i", step=10)
-    #             comment = st.text_area("Comment", comment)
-    #             updated = st.form_submit_button("Update Data")
-    #             if updated:
-    #                 if db.update_period(period, incomes, expenses, comment):
-    #                     st.success("Data updated.")
-    #                 else:
-    #                     st.error("Failed to update data.")
-
-    # # Add a Delete button
-    # if st.button("Delete"):
-    #     st.warning("Are you sure you want to delete this period?")
-    #     if st.button("Yes, delete"):
-    #         if db.delete_period(period):
-    #             st.success(f"Period {period} deleted.")
-    #         else:
-    #             st.error("Failed to delete the period.")
-
-    if submitted:
-        # Get data from database
-        period_data = db.get_period(period)
-        comment = period_data.get("comment")
-        expenses = period_data.get("expenses")
-        incomes = period_data.get("incomes")
-
-        # ... The rest of your code for plotting and displaying the period data ...
-
-
-            # Create metrics
-        total_income = sum(incomes.values())
-        total_expense = sum(expenses.values())
-        remaining_budget = total_income - total_expense
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Total Income", f"{total_income} {currency}")
-        col2.metric("Total Expense", f"{total_expense} {currency}")
-        col3.metric("Remaining Budget", f"{remaining_budget} {currency}")
-        st.text(f"Comment: {comment}")
-
-        # Create sankey chart
-        label = list(incomes.keys()) + ["Total Income"] + list(expenses.keys())
-        source = list(range(len(incomes))) + [len(incomes)] * len(expenses)
-        target = [len(incomes)] * len(incomes) + [label.index(expense) for expense in expenses.keys()]
-        value = list(incomes.values()) + list(expenses.values())
-
-        # Data to dict, dict to sankey
-        link = dict(source=source, target=target, value=value)
-        node = dict(label=label, pad=20, thickness=30, color="#E694FF")
-        data = go.Sankey(link=link, node=node)
-
-        # Plot it!
-        fig = go.Figure(data)
-        fig.update_layout(margin=dict(l=0, r=0, t=5, b=5))
-        st.plotly_chart(fig, use_container_width=True)
+        if submitted:
+            # Get data from database
+            period_data = db.get_period(period)
+            comment = period_data.get("comment")
+            expenses = period_data.get("expenses")
+            incomes = period_data.get("incomes")
+    
+            # ... The rest of your code for plotting and displaying the period data ...
+    
+    
+                # Create metrics
+            total_income = sum(incomes.values())
+            total_expense = sum(expenses.values())
+            remaining_budget = total_income - total_expense
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Total Income", f"{total_income} {currency}")
+            col2.metric("Total Expense", f"{total_expense} {currency}")
+            col3.metric("Remaining Budget", f"{remaining_budget} {currency}")
+            st.text(f"Comment: {comment}")
+    
+            # Create sankey chart
+            label = list(incomes.keys()) + ["Total Income"] + list(expenses.keys())
+            source = list(range(len(incomes))) + [len(incomes)] * len(expenses)
+            target = [len(incomes)] * len(incomes) + [label.index(expense) for expense in expenses.keys()]
+            value = list(incomes.values()) + list(expenses.values())
+    
+            # Data to dict, dict to sankey
+            link = dict(source=source, target=target, value=value)
+            node = dict(label=label, pad=20, thickness=30, color="#E694FF")
+            data = go.Sankey(link=link, node=node)
+    
+            # Plot it!
+            fig = go.Figure(data)
+            fig.update_layout(margin=dict(l=0, r=0, t=5, b=5))
+            st.plotly_chart(fig, use_container_width=True)
