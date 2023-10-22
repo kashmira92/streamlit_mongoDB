@@ -10,7 +10,7 @@ from streamlit_option_menu import option_menu
 
 import database as db  # local import
 
---css
+# css
 # Add CSS for styling
 st.markdown(
     """
@@ -155,12 +155,12 @@ if selected == "Data Entry":
             db.insert_period(period, incomes, expenses, comment)
             st.success("Data saved!")
 
-if selected == "Data Visualization":
-    st.header("Data Visualization")
-    with st.form("saved_periods"):
-        period = st.selectbox("Select Period:", get_all_periods())
-        submitted = st.form_submit_button("Plot Period")
-        if submitted:
+# if selected == "Data Visualization":
+#     st.header("Data Visualization")
+#     with st.form("saved_periods"):
+#         period = st.selectbox("Select Period:", get_all_periods())
+#         submitted = st.form_submit_button("Plot Period")
+#         if submitted:
 # end of new added lines
 # --- PLOT PERIODS ---
 if selected == "Data Visualization":
