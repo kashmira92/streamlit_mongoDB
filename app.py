@@ -86,39 +86,39 @@ if selected == "Data Visualization":
         period = st.selectbox("Select Period:", get_all_periods())
         submitted = st.form_submit_button("Plot Period")
 
-    # Add an Update button
-    if st.button("Update"):
-        st.header("Update Period")
-        with st.form("update_form"):
-            period_data = db.get_period(period)
-            if period_data:
-                incomes = period_data.get("incomes")
-                expenses = period_data.get("expenses")
-                comment = period_data.get("comment")
+    # # Add an Update button
+    # if st.button("Update"):
+    #     st.header("Update Period")
+    #     with st.form("update_form"):
+    #         period_data = db.get_period(period)
+    #         if period_data:
+    #             incomes = period_data.get("incomes")
+    #             expenses = period_data.get("expenses")
+    #             comment = period_data.get("comment")
 
-                col1, col2 = st.columns(2)
-                col1.text("Income")
-                for income in incomes:
-                    incomes[income] = col1.number_input(f"{income}:", value=incomes[income], min_value=0, format="%i", step=10)
-                col2.text("Expenses")
-                for expense in expenses:
-                    expenses[expense] = col2.number_input(f"{expense}:", value=expenses[expense], min_value=0, format="%i", step=10)
-                comment = st.text_area("Comment", comment)
-                updated = st.form_submit_button("Update Data")
-                if updated:
-                    if db.update_period(period, incomes, expenses, comment):
-                        st.success("Data updated.")
-                    else:
-                        st.error("Failed to update data.")
+    #             col1, col2 = st.columns(2)
+    #             col1.text("Income")
+    #             for income in incomes:
+    #                 incomes[income] = col1.number_input(f"{income}:", value=incomes[income], min_value=0, format="%i", step=10)
+    #             col2.text("Expenses")
+    #             for expense in expenses:
+    #                 expenses[expense] = col2.number_input(f"{expense}:", value=expenses[expense], min_value=0, format="%i", step=10)
+    #             comment = st.text_area("Comment", comment)
+    #             updated = st.form_submit_button("Update Data")
+    #             if updated:
+    #                 if db.update_period(period, incomes, expenses, comment):
+    #                     st.success("Data updated.")
+    #                 else:
+    #                     st.error("Failed to update data.")
 
-    # Add a Delete button
-    if st.button("Delete"):
-        st.warning("Are you sure you want to delete this period?")
-        if st.button("Yes, delete"):
-            if db.delete_period(period):
-                st.success(f"Period {period} deleted.")
-            else:
-                st.error("Failed to delete the period.")
+    # # Add a Delete button
+    # if st.button("Delete"):
+    #     st.warning("Are you sure you want to delete this period?")
+    #     if st.button("Yes, delete"):
+    #         if db.delete_period(period):
+    #             st.success(f"Period {period} deleted.")
+    #         else:
+    #             st.error("Failed to delete the period.")
 
     if submitted:
         # Get data from database
