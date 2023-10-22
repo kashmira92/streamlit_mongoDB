@@ -3,21 +3,14 @@ import streamlit as st  # pip install streamlit
 
 
 from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+# from pymongo.server_api import ServerApi
 
 MONGO_URI = "mongodb+srv://kgolatka:root@cluster0.vzbsfma.mongodb.net/?retryWrites=true&w=majority"
 
 DATABASE_NAME = "personal_income_expense_tracker"
 COLLECTION_NAME = "monthly_expense"
 # Create a new client and connect to the server
-client = MongoClient(MONGO_URI, server_api=ServerApi('1'))
-
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+client = MongoClient(MONGO_URI)
 
 db = client[DATABASE_NAME]
 collection = db[COLLECTION_NAME]
