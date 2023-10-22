@@ -10,6 +10,38 @@ from streamlit_option_menu import option_menu
 
 import database as db  # local import
 
+--css
+# Add CSS for styling
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-image: url('https://ibb.co/5TswcVt');  /* Set your background image URL here */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+    .stApp header {
+        background-color: rgba(0, 0, 0, 0.6);
+        border-bottom: 2px solid white;
+        padding: 10px;
+    }
+    .stApp .stButton {
+        background-color: #007BFF;
+        color: white;
+    }
+    .stApp .stButton:hover {
+        background-color: #0056b3;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
 # -------------- SETTINGS --------------
 incomes = ["Salary", "Part-Time", "Other Income"]
 expenses = ["Rent", "Utilities", "Groceries", "Car", "Other Expenses", "Saving"]
@@ -17,6 +49,7 @@ currency = "USD"
 page_title = "Personal Income - Expense Tracker"
 page_icon = ":money_with_wings:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 layout = "centered"
+
 # --------------------------------------
 
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
@@ -41,25 +74,70 @@ hide_st_style = """
             header {visibility: hidden;}
             </style>
             """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+# st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# --- NAVIGATION MENU ---
-selected = option_menu(
-    menu_title=None,
-    options=["Data Entry", "Data Visualization"],
-    icons=["pencil-fill", "bar-chart-fill"],  # https://icons.getbootstrap.com/
-    orientation="horizontal",
+# # --- NAVIGATION MENU ---
+# selected = option_menu(
+#     menu_title=None,
+#     options=["Data Entry", "Data Visualization"],
+#     icons=["pencil-fill", "bar-chart-fill"],  # https://icons.getbootstrap.com/
+#     orientation="horizontal",
+# )
+
+# # --- INPUT & SAVE PERIODS ---
+# if selected == "Data Entry":
+#     st.header(f"Data Entry in {currency}")
+#     with st.form("entry_form", clear_on_submit=True):
+#         col1, col2 = st.columns(2)
+#         col1.selectbox("Select Month:", months, key="month")
+#         col2.selectbox("Select Year:", years, key="year")
+
+#         "---"
+#         with st.expander("Income"):
+#             for income in incomes:
+#                 st.number_input(f"{income}:", min_value=0, format="%i", step=10, key=income)
+#         with st.expander("Expenses"):
+#             for expense in expenses:
+#                 st.number_input(f"{expense}:", min_value=0, format="%i", step=10, key=expense)
+#         with st.expander("Comment"):
+#             comment = st.text_area("", placeholder="Enter a comment here ...")
+
+#         "---"
+#         submitted = st.form_submit_button("Save Data")
+#         if submitted:
+#             period = str(st.session_state["year"]) + "_" + str(st.session_state["month"])
+#             incomes = {income: st.session_state[income] for income in incomes}
+#             expenses = {expense: st.session_state[expense] for expense in expenses}
+#             db.insert_period(period, incomes, expenses, comment)
+#             st.success("Data saved!")
+
+# new added lines
+st.markdown(
+    """
+    <style>
+    .fadeIn {
+        animation: fadeIn 2s;
+    }
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: scale(0.9); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
-# --- INPUT & SAVE PERIODS ---
+# Apply animation to elements
+st.title("Personal Income - Expense Tracker")
+st.markdown('<div class="fadeIn">Welcome to your personal finance tracker!</div>', unsafe_allow_html=True)
+
+# Add more animations and styling to individual sections
 if selected == "Data Entry":
     st.header(f"Data Entry in {currency}")
     with st.form("entry_form", clear_on_submit=True):
         col1, col2 = st.columns(2)
         col1.selectbox("Select Month:", months, key="month")
         col2.selectbox("Select Year:", years, key="year")
-
-        "---"
         with st.expander("Income"):
             for income in incomes:
                 st.number_input(f"{income}:", min_value=0, format="%i", step=10, key=income)
@@ -69,7 +147,6 @@ if selected == "Data Entry":
         with st.expander("Comment"):
             comment = st.text_area("", placeholder="Enter a comment here ...")
 
-        "---"
         submitted = st.form_submit_button("Save Data")
         if submitted:
             period = str(st.session_state["year"]) + "_" + str(st.session_state["month"])
@@ -78,7 +155,13 @@ if selected == "Data Entry":
             db.insert_period(period, incomes, expenses, comment)
             st.success("Data saved!")
 
-
+if selected == "Data Visualization":
+    st.header("Data Visualization")
+    with st.form("saved_periods"):
+        period = st.selectbox("Select Period:", get_all_periods())
+        submitted = st.form_submit_button("Plot Period")
+        if submitted:
+--end of new added lines
 # --- PLOT PERIODS ---
 if selected == "Data Visualization":
     st.header("Data Visualization")
