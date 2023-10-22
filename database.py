@@ -1,55 +1,67 @@
 import streamlit as st  # pip install streamlit
-from deta import Deta  # pip install deta
+# from deta import Deta  # pip install deta
 
 
-# Load the environment variables
-DETA_KEY = "b0jAddiWaMf_3scH2wPKs4xfUXnPcDyfL7PPiTvznS5F"
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
-# Initialize with a project key
-deta = Deta(DETA_KEY)
+MONGO_URI = "mongodb+srv://kgolatka:<password>@cluster0.vzbsfma.mongodb.net/?retryWrites=true&w=majority"
 
-# This is how to create/connect a database
-db = deta.Base("monthly_expense")
+DATABASE_NAME = "personal_income_expense_tracker"
+COLLECTION_NAME = "monthly_expense"
+# Create a new client and connect to the server
+client = MongoClient(MONGO_URI, server_api=ServerApi('1'))
 
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+db = client[DATABASE_NAME]
+collection = db[COLLECTION_NAME]
 
 def insert_period(period, incomes, expenses, comment):
-    """Returns the report on a successful creation, otherwise raises an error"""
-    print("Inserting data:")
-    print("Period:", period)
-    print("Incomes:", incomes)
-    print("Expenses:", expenses)
-    print("Comment:", comment)
-    return db.put({"key": period, "incomes": incomes, "expenses": expenses, "comment": comment})
-
-def update_period(period, new_incomes, new_expenses, new_comment):
-    """Updates an existing record with new data"""
-    existing_data = db.get(period)
-    if existing_data:
-        existing_data["incomes"] = new_incomes
-        existing_data["expenses"] = new_expenses
-        existing_data["comment"] = new_comment
-        db.put(existing_data)
-        return True
-    else:
-        st.error(f"Period {period} not found for update.")
-        return False
-        
-def delete_period(period):
-    """Deletes a record for a given period"""
-    existing_data = db.get(period)
-    if existing_data:
-        db.delete(existing_data.key)
-        return True
-    else:
-        st.error(f"Period {period} not found for delete.")
-        return False
+    data = {
+        "key": period,
+        "incomes": incomes,
+        "expenses": expenses,
+        "comment": comment
+    }
+    collection.insert_one(data)
 
 def fetch_all_periods():
-    """Returns a dict of all periods"""
-    res = db.fetch()
-    return res.items
-
+    items = collection.find()
+    return items
 
 def get_period(period):
-    """If not found, the function will return None"""
-    return db.get(period)
+    return collection.find_one({"key": period})
+# Load the environment variables
+# DETA_KEY = "b0jAddiWaMf_3scH2wPKs4xfUXnPcDyfL7PPiTvznS5F"
+
+# Initialize with a project key
+# deta = Deta(DETA_KEY)
+
+# This is how to create/connect a database
+# db = deta.Base("monthly_expense")
+
+
+# def insert_period(period, incomes, expenses, comment):
+#     """Returns the report on a successful creation, otherwise raises an error"""
+#     print("Inserting data:")
+#     print("Period:", period)
+#     print("Incomes:", incomes)
+#     print("Expenses:", expenses)
+#     print("Comment:", comment)
+#     return db.put({"key": period, "incomes": incomes, "expenses": expenses, "comment": comment})
+
+# def fetch_all_periods():
+#     """Returns a dict of all periods"""
+#     res = db.fetch()
+#     return res.items
+
+
+# def get_period(period):
+#     """If not found, the function will return None"""
+#     return db.get(period)
