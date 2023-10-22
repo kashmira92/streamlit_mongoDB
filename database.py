@@ -6,8 +6,8 @@ from pymongo.mongo_client import MongoClient
 # from pymongo.server_api import ServerApi
 
 MONGO_URI = "mongodb+srv://kgolatka:root@cluster0.vzbsfma.mongodb.net/?retryWrites=true&w=majority"
-DATABASE_NAME = "personal_income_expense_tracker"
-COLLECTION_NAME = "monthly_expense"
+DATABASE_NAME = "test_exp_inc_db"
+COLLECTION_NAME = "inc_exp_collection"
 # Create a new client and connect to the server
 client = MongoClient(MONGO_URI)
 
