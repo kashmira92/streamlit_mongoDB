@@ -92,6 +92,31 @@ if selected == "Data Visualization":
             comment = period_data.get("comment")
             expenses = period_data.get("expenses")
             incomes = period_data.get("incomes")
+               # Create metrics
+            total_income = sum(incomes.values())
+            total_expense = sum(expenses.values())
+            remaining_budget = total_income - total_expense
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Total Income", f"{total_income} {currency}")
+            col2.metric("Total Expense", f"{total_expense} {currency}")
+            col3.metric("Remaining Budget", f"{remaining_budget} {currency}")
+            st.text(f"Comment: {comment}")
+    
+            # Create sankey chart
+            label = list(incomes.keys()) + ["Total Income"] + list(expenses.keys())
+            source = list(range(len(incomes))) + [len(incomes)] * len(expenses)
+            target = [len(incomes)] * len(incomes) + [label.index(expense) for expense in expenses.keys()]
+            value = list(incomes.values()) + list(expenses.values())
+    
+            # Data to dict, dict to sankey
+            link = dict(source=source, target=target, value=value)
+            node = dict(label=label, pad=20, thickness=30, color="#E694FF")
+            data = go.Sankey(link=link, node=node)
+    
+            # Plot it!
+            fig = go.Figure(data)
+            fig.update_layout(margin=dict(l=0, r=0, t=5, b=5))
+            st.plotly_chart(fig, use_container_width=True)
     
     # Add update form    
     with st.form("update_form"):
@@ -123,28 +148,4 @@ if selected == "Data Visualization":
 
     
     
-                # Create metrics
-            total_income = sum(incomes.values())
-            total_expense = sum(expenses.values())
-            remaining_budget = total_income - total_expense
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Total Income", f"{total_income} {currency}")
-            col2.metric("Total Expense", f"{total_expense} {currency}")
-            col3.metric("Remaining Budget", f"{remaining_budget} {currency}")
-            st.text(f"Comment: {comment}")
-    
-            # Create sankey chart
-            label = list(incomes.keys()) + ["Total Income"] + list(expenses.keys())
-            source = list(range(len(incomes))) + [len(incomes)] * len(expenses)
-            target = [len(incomes)] * len(incomes) + [label.index(expense) for expense in expenses.keys()]
-            value = list(incomes.values()) + list(expenses.values())
-    
-            # Data to dict, dict to sankey
-            link = dict(source=source, target=target, value=value)
-            node = dict(label=label, pad=20, thickness=30, color="#E694FF")
-            data = go.Sankey(link=link, node=node)
-    
-            # Plot it!
-            fig = go.Figure(data)
-            fig.update_layout(margin=dict(l=0, r=0, t=5, b=5))
-            st.plotly_chart(fig, use_container_width=True)
+             
