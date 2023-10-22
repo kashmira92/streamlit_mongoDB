@@ -23,6 +23,16 @@ def insert_period(period, incomes, expenses, comment):
     }
     collection.insert_one(data)
 
+def update_period(period, incomes, expenses, comment):
+  collection.update_one(
+    {"key": period},
+    {"$set": {
+      "incomes": incomes,
+      "expenses": expenses, 
+      "comment": comment  
+    }}
+  )
+
 def fetch_all_periods():
     items = collection.find()
     return items
