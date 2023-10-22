@@ -161,7 +161,7 @@ if selected == "Data Visualization":
         period = st.selectbox("Select Period:", get_all_periods())
         submitted = st.form_submit_button("Plot Period")
         if submitted:
---end of new added lines
+# end of new added lines
 # --- PLOT PERIODS ---
 if selected == "Data Visualization":
     st.header("Data Visualization")
